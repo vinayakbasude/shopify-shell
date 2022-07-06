@@ -1,0 +1,354 @@
+<div class="review-slider">
+
+    <!-- starting div start -->
+
+    <div class="review-slider__protagonist">
+
+        <div class="review-slider__protagonist--details">
+            <div class="review-slider__protagonist--details--fixer">
+                <div id="review-rating" class="review-slider__protagonist--details--fixer--ratings"></div>
+                <p id="review-highlight" class="review-slider__protagonist--details--fixer--highlight"></p>
+                <p id="review-description" class="review-slider__protagonist--details--fixer--description"></p>
+                <h3 id="reviewer-name" class="review-slider__protagonist--details--fixer--name"></h3>
+                <h3 id="about-reviewer" class="review-slider__protagonist--details--fixer--about-reviewer"></h3>
+            </div>
+        </div>
+
+
+        <div class="review-slider__protagonist--image">
+            <div class="review-slider__protagonist--image--container">
+                {%for review in section.blocks %}
+                    <div class="review-slider__protagonist--image--container__slides">
+                        <img class="review-slider__protagonist--image--container__slides--img" src="{{review.settings["reviewer-image"]|img_url}}">
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+        <div class="review-slider__protagonist--image--buttons">
+            <button class="review-slider__protagonist--image--buttons--btn-box" id="prev-btn">Previous</button>
+            <button class="review-slider__protagonist--image--buttons--btn-box" id="next-btn">Next</button>
+        </div>
+
+    </div>
+
+
+    <!-- slider__supporter start -->
+    <div class="review-slider__supporter">
+
+        <div class="review-slider__supporter--first-window">
+            <div class="review-slider__supporter--first-window--container">
+                {%for review2 in section.blocks %}
+                    {% if forloop.index > 1%}
+                        <div class="review-slider__supporter--first-window--container__slides">
+                            <img class="review-slider__supporter--first-window--container__slides--img"
+                                src='{{review2.settings["reviewer-image"]| img_url}}'>
+
+                            <div class="review-slider__supporter--first-window--container__slides--info">
+                                <h3 class="name">
+                                    {{review2.settings["critic"]}}
+                                </h3>
+                                <h3 class="about-reviewer">
+                                    {{review2.settings["critic_profession"]}}
+                                </h3>
+                            </div>
+                        </div>
+                    {%endif%}
+                {% endfor %}
+                {%for review2 in section.blocks %}
+                    {% if forloop.index < 2%} 
+                        <div class="review-slider__supporter--first-window--container__slides">
+                            <img class="review-slider__supporter--first-window--container__slides--img"
+                                src='{{review2.settings["reviewer-image"]|img_url}}'>
+
+                            <div class="review-slider__supporter--first-window--container__slides--info">
+                                <h3 class="name">
+                                    {{review2.settings["critic"]}}
+                                </h3>
+                                <h3 class="about-reviewer">
+                                    {{review2.settings["critic_profession"]}}
+                                </h3>
+                            </div>
+                        </div>
+                        {% break %}
+                    {%endif%}
+                {% endfor %}
+            </div>
+        </div>
+
+        <div class="review-slider__supporter--second-window">
+            <div class="review-slider__supporter--second-window--container">
+                {%for review3 in section.blocks %}
+                    {% if forloop.index > 2%}
+                        <div class="review-slider__supporter--second-window--container__slides">
+                            <img class="review-slider__supporter--second-window--container__slides--img"
+                                src='{{review3.settings["reviewer-image"]|img_url}}'>
+
+                            <div class="review-slider__supporter--second-window--container__slides--info">
+                                <h3 class="name">
+                                    {{review3.settings["critic"]}}
+                                </h3>
+                                <h3 class="about-reviewer">
+                                    {{review3.settings["critic_profession"]}}
+                                </h3>
+                            </div>
+                        </div>
+                    {%endif%}
+                {% endfor %}
+                {%for review3 in section.blocks %}
+                    {% if forloop.index < 3%} 
+                        <div class="review-slider__supporter--second-window--container__slides">
+                            <img class="review-slider__supporter--second-window--container__slides--img"
+                                src='{{review3.settings["reviewer-image"]|img_url}}'>
+                            <div class="review-slider__supporter--second-window--container__slides--info">
+                                <h3 class="name">
+                                    {{review3.settings["critic"]}}
+                                </h3>
+                                <h3 class="about-reviewer">
+                                    {{review3.settings["critic_profession"]}}
+                                </h3>
+                            </div>
+                        </div>
+                    {% else %}
+                        {%break%}
+                    {% endif %}
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+    <!-- slider__supporter start -->
+
+    <!-- starting div ends -->
+
+</div>
+
+
+<script>
+
+    window.reviews = [];
+    {% for review in section.blocks %}
+        window.reviews.push({{ review.settings | json }});
+    {% endfor %}
+
+    const nextBtn = document.getElementById("next-btn");
+    const prevBtn = document.getElementById("prev-btn");
+    const mainFrameContainer = document.querySelector(
+        ".review-slider__protagonist--image--container"
+    );
+    const secondFrameContainer = document.querySelector(
+        ".review-slider__supporter--first-window--container"
+    );
+    const thirdFrameContainer = document.querySelector(
+        ".review-slider__supporter--second-window--container"
+    );
+
+    const aboutReviewer = document.querySelector('#about-reviewer'),
+    reviewer = document.querySelector('#reviewer-name'),
+    ratings =  document.querySelector('#review-rating'),
+    highlight = document.querySelector('#review-highlight'),
+    description = document.querySelector('#review-description')
+
+    let index = 1;
+    let mainFrameSlides = document.querySelectorAll(
+        ".review-slider__protagonist--image--container__slides"
+    );
+    let secondFrameSlides = document.querySelectorAll(
+        ".review-slider__supporter--first-window--container__slides"
+    );
+    let thirdFrameSlides = document.querySelectorAll(
+        ".review-slider__supporter--second-window--container__slides"
+    );
+
+    let containerListenerCounter = 0;
+    
+    const slideWidth = 403;
+    const supporterWidth = 271;
+    const totalFrames = 3;
+    const mainFrameFirstClone = mainFrameSlides[0].cloneNode(true);
+    const mainFrameLastClone =
+        mainFrameSlides[mainFrameSlides.length - 1].cloneNode(true);
+
+    const secondFrameFirstClone = secondFrameSlides[0].cloneNode(true);
+    const secondFrameLastClone =
+        secondFrameSlides[secondFrameSlides.length - 1].cloneNode(true);
+
+    const thirdFrameFirstClone = thirdFrameSlides[0].cloneNode(true);
+    const thirdFrameLastClone =
+        thirdFrameSlides[thirdFrameSlides.length - 1].cloneNode(true);
+
+    mainFrameFirstClone.id = "first-clone";
+    mainFrameLastClone.id = "last-clone";
+
+    mainFrameContainer.append(mainFrameFirstClone);
+    mainFrameContainer.prepend(mainFrameLastClone);
+
+    secondFrameFirstClone.id = "second-frame-first-clone";
+    secondFrameLastClone.id = "second-frame-last-clone";
+
+    secondFrameContainer.append(secondFrameFirstClone);
+    secondFrameContainer.prepend(secondFrameLastClone);
+
+    thirdFrameFirstClone.id = "third-frame-first-clone";
+    thirdFrameLastClone.id = "third-frame-last-clone";
+
+    thirdFrameContainer.append(thirdFrameFirstClone);
+    thirdFrameContainer.prepend(thirdFrameLastClone);
+
+   
+    const getSlides = (selector) => document.querySelectorAll(selector);
+
+    function fixInitialPos(frame, width, idx){
+        frame.style.transform = `translateX(${-width * idx}px)`;
+    }
+
+    fixInitialPos(mainFrameContainer,slideWidth, 1);
+    fixInitialPos(secondFrameContainer,supporterWidth, 1);
+    fixInitialPos(thirdFrameContainer,supporterWidth, 1);
+
+    function attachEventListener(
+        frame,
+        slidesRef,
+        { firstClone, lastClone },
+        slidesWidth
+    ) {
+        frame.addEventListener("transitionend", () => {
+            const slidesArr = getSlides(slidesRef);
+            containerListenerCounter += 1;
+            let tempIndex = index;
+            if (slidesArr[index].id === firstClone.id) {
+                frame.style.transition = "none";
+                tempIndex = 1;
+                if (containerListenerCounter === totalFrames) {
+                    index = 1;
+                }
+                frame.style.transform = `translateX(${-slidesWidth * tempIndex}px)`;
+            }
+
+            if (slidesArr[index].id === lastClone.id) {
+                frame.style.transition = "none";
+                tempIndex = slidesArr.length - 2
+                if ((containerListenerCounter === totalFrames)) {
+                    index = tempIndex;
+                }
+                frame.style.transform = `translateX(${-slidesWidth * tempIndex}px)`;
+            }
+
+            if (containerListenerCounter === totalFrames) {
+                containerListenerCounter = 0;
+            }
+        });
+    }
+
+    attachEventListener(
+        mainFrameContainer,
+        ".review-slider__protagonist--image--container__slides",
+        {
+            firstClone: mainFrameFirstClone,
+            lastClone: mainFrameLastClone,
+        },
+        slideWidth
+    );
+    attachEventListener(
+        secondFrameContainer,
+        ".review-slider__supporter--first-window--container__slides",
+        { firstClone: secondFrameFirstClone, lastClone: secondFrameLastClone },
+        supporterWidth
+    );
+
+    attachEventListener(
+        thirdFrameContainer,
+        ".review-slider__supporter--second-window--container__slides",
+        { firstClone: thirdFrameFirstClone, lastClone: thirdFrameLastClone },
+        supporterWidth
+    );
+
+    function changeDetails(details) {
+        ratings.textContent= details['rating'];
+        highlight.textContent= details['review-highlight'];
+        description.textContent= details['review-highlight-description'];
+        aboutReviewer.textContent= details['critic_profession'];
+        reviewer.textContent= details['critic'];
+    }
+
+    function moveToNextSlide(){
+        slides = getSlides(".review-slider__protagonist--image--container__slides");
+        if (index >= slides.length - 1) return;
+        index++;
+        const reviewIndex = index > window.reviews.length? 0 : index - 1;
+        changeDetails(window.reviews[reviewIndex]);
+        mainFrameContainer.style.transition = ".5s ease-in-out";
+        mainFrameContainer.style.transform = `translateX(${-slideWidth * index}px)`;
+        secondFrameContainer.style.transition = ".5s ease-in-out";
+        secondFrameContainer.style.transform = `translateX(${-supporterWidth * index}px)`;
+        thirdFrameContainer.style.transition = ".5s ease-in-out";
+        thirdFrameContainer.style.transform = `translateX(${-supporterWidth * index}px)`;
+    };
+
+    function moveToPreviousSlide(){
+        if (index <= 0) return;
+        index--;
+        const reviewIndex = index === 0 ? window.reviews.length - 1 : index - 1;
+        changeDetails(window.reviews[reviewIndex]);
+        mainFrameContainer.style.transition = ".5s ease-in-out";
+        mainFrameContainer.style.transform = `translateX(${-slideWidth * index}px)`;
+        secondFrameContainer.style.transition = ".5s ease-in-out";
+        secondFrameContainer.style.transform = `translateX(${-supporterWidth * index}px)`;
+        thirdFrameContainer.style.transition = ".5s ease-in-out";
+        thirdFrameContainer.style.transform = `translateX(${-supporterWidth * index}px)`;
+    };
+
+    changeDetails(window.reviews[0]);
+    nextBtn.addEventListener("click", moveToNextSlide);
+    prevBtn.addEventListener("click", moveToPreviousSlide);
+
+
+</script>
+
+{% schema %}
+{
+    "name": "Review Slider",
+    "tag": "section",
+    "class": "reviews-carousel",
+    "blocks": [
+        {
+        "name": "Reviews",
+        "type": "slider",
+        "settings": [
+            {
+                "type": "text",
+                "id":"critic",
+                "label": "Name:"
+            },
+            {
+                "type": "text",
+                "id":"critic_profession",
+                "label":"About your self:"
+            },
+            {
+                "type": "text",
+                "id":"review-highlight",
+                "label": "One word for product"
+            },
+            {
+                "type": "text",
+                "id":"review-highlight-description",
+                "label": "Product review"
+            },
+            {
+                "type": "image_picker",
+                "id": "reviewer-image",
+                "label": "Photo"
+            },
+            {
+                "type": "range",
+                "id": "rating",
+                "min": 0,
+                "max": 5,
+                "step": 1,
+                "label": "Rating",
+                "default": 0
+            }]
+        }
+
+    ]
+}
+{% endschema %}
