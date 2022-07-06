@@ -1,0 +1,28 @@
+.nav-menu {
+  margin: 0;
+  padding: 0 1rem;
+  display: none;
+  transform: translateZ(0);
+
+  @include above('tablet') {
+    display: flex;
+  }
+
+  li {
+    a {
+      @include padding(0.5rem, 1rem, 0.5rem, 1rem);
+
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 1px;
+      color: color('text');
+      text-transform: uppercase;
+      text-decoration: none;
+
+      &:hover {
+        color: color('text');
+        text-decoration: underline;
+      }
+    }
+  }
+}
