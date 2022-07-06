@@ -1,0 +1,7 @@
+development:
+  password: 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
+  theme_id: "130577596582"
+  store: partnercreation1.myshopify.com
+  directory: dist/
+  ignore_files:
+    - config/settings_data.json
